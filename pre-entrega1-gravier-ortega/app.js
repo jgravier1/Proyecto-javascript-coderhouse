@@ -1,51 +1,87 @@
 function aleatorio(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const jugadas = {
+    1: "Piedra 🪨",
+    2: "Papel 📃",
+    3: "Tijera ✂️"
+};
+
+const jugadasArray = Object.values(jugadas);
+
+function buscarJugada(jugada) {
+    return jugadasArray.indexOf(jugada);
+}
+
+function filtrarJugadasGanadoras(jugada) {
+    if (jugada === 1) {
+        return jugadasArray.filter((j) => j === jugadas[3]);
+    } else if (jugada === 2) {
+        return jugadasArray.filter((j) => j === jugadas[1]);
+    } else if (jugada === 3) {
+        return jugadasArray.filter((j) => j === jugadas[2]);
+    } else {
+        return [];
+    }
 }
 
 function eleccion(jugada) {
-    let resultado = ""
-    if (jugada == 1) {
-        resultado = "Piedra 🪨"
-    } else if (jugada == 2) {
-        resultado = "Papel 📃"
-    } else if (jugada == 3) {
-        resultado = "Tijera ✂️"
-    } else {
-        resultado = "MAL ELEGIDO"
-    }
-    return resultado
+    return jugadas[jugada] || "MAL ELEGIDO";
 }
 
-// 1 es piedra, 2 es papel, 3 es tijera
-let jugador = 0
-let pc = 0
-let triunfos = 0
-let perdidas = 0
+let jugador = 0;
+let pc = 0;
+let triunfos = 0;
+let perdidas = 0;
+let partidas = [];
 
 while (triunfos < 3 && perdidas < 3) {
-    pc = aleatorio(1, 3)
-    jugador = prompt("Elige: 1 para piedra, 2 para papel, 3 para tijera")
-    // alert("Elegiste " + jugador)
+    pc = aleatorio(1, 3);
+    jugador = parseInt(prompt("Elige: 1 para piedra, 2 para papel, 3 para tijera"));
 
-    alert("PC elige " + eleccion(pc))
-    alert("Tú eliges " + eleccion(jugador))
+    alert("PC elige " + eleccion(pc));
+    alert("Tú eliges " + eleccion(jugador));
 
-    // COMBATE
-    if (pc == jugador) {
-        alert("EMPATE")
-    } else if (jugador == 1 && pc == 3) {
-        alert("GANASTE")
-        triunfos = triunfos + 1
-    } else if (jugador == 2 && pc == 1) {
-        alert("GANASTE")
-        triunfos = triunfos + 1
-    } else if (jugador == 3 && pc == 2) {
-        alert("GANASTE")
-        triunfos = triunfos + 1
+    let partida = {
+        jugador: eleccion(jugador),
+        ganadoras: []
+    };
+
+    if (pc === jugador) {
+        alert("EMPATE");
     } else {
-        alert("PERDISTE")
-        perdidas = perdidas + 1
+        const jugadasGanadorasJugador = filtrarJugadasGanadoras(jugador);
+
+        if (jugadasGanadorasJugador.includes(eleccion(pc))) {
+            alert("GANASTE");
+            triunfos++;
+        } else {
+            alert("PERDISTE");
+            perdidas++;
+            partida.ganadoras = jugadasGanadorasJugador;
+        }
     }
+
+    partidas.push(partida);
 }
 
-alert("Ganaste " + triunfos + " veces. Perdiste " + perdidas + " veces.")
+alert("Ganaste " + triunfos + " veces. Perdiste " + perdidas + " veces.");
+
+if (perdidas > 0) {
+    const opcionesGanadoras = partidas
+        .filter((partida) => partida.ganadoras.length > 0)
+        .map((partida, indice) => ({
+            partida: indice + 1,
+            opciones: partida.ganadoras.map((opcion) => `${opcion}`)
+        }));
+
+    if (opcionesGanadoras.length > 0) {
+        const mensaje = opcionesGanadoras
+            .map((item) => `Partida ${item.partida}: Debió escoger ${item.opciones.join(" o ")}`)
+            .join("\n");
+        alert(`En las siguientes partidas debiste escoger una de las opciones ganadoras:\n${mensaje}`);
+    } else {
+        alert("No hay opciones disponibles para ganar en ninguna partida.");
+    }
+}

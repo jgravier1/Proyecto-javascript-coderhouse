@@ -10,7 +10,7 @@
 
 ## Descripción del proyecto
 
-mi primera entrga del proyecto de JavaScript, un juego de papel y tijera interactivo en el que el usuario juega contra la computadora. Para ello, utilizo condicionales, ciclos y funciones en JavaScript
+proyecto de JavaScript, un juego de papel y tijera interactivo en el que el usuario juega contra la computadora. Para ello, utilizo condicionales, ciclos y funciones en JavaScript
 
 ```javascript
 function aleatorio(min, max) {
